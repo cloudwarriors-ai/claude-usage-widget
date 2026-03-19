@@ -1,4 +1,4 @@
-// Claude Pro Max Usage — Übersicht Desktop Widget
+// Claude Usage — Übersicht Desktop Widget
 // Reads OAuth token from macOS Keychain (Claude Code credentials)
 // and displays real-time usage gauges on your desktop.
 
@@ -42,8 +42,10 @@ export const className = `
 const WINDOWS = {
   five_hour:           { label: "5-Hour",      short: "5H" },
   seven_day:           { label: "7-Day",       short: "7D" },
-  seven_day_oauth_apps:{ label: "OAuth Apps",  short: "OA" },
   seven_day_opus:      { label: "Opus",        short: "OP" },
+  seven_day_sonnet:    { label: "Sonnet",      short: "SN" },
+  seven_day_cowork:    { label: "Cowork",      short: "CW" },
+  seven_day_oauth_apps:{ label: "OAuth Apps",  short: "OA" },
 };
 
 function getColor(pct) {
@@ -210,7 +212,7 @@ export const render = ({ output, error }) => {
           background: getColor(maxPct),
           boxShadow: `0 0 6px ${getColor(maxPct)}`,
         }} />
-        Claude Pro Max
+        Claude Usage
       </div>
 
       {/* Gauges */}

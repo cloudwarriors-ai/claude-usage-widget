@@ -1,6 +1,6 @@
-# Claude Pro Max Usage Widget
+# Claude Usage Widget
 
-A macOS desktop widget that shows your Claude Pro Max subscription utilization in real-time.
+A macOS desktop widget that shows your Claude subscription usage in real-time. Works with Pro, Teams, and Enterprise accounts.
 
 ![widget](screenshot.png)
 
@@ -9,76 +9,61 @@ A macOS desktop widget that shows your Claude Pro Max subscription utilization i
 - **5-Hour** rolling session utilization
 - **7-Day** weekly rolling utilization
 - **Opus / Sonnet** model-specific limits (when active)
-- Countdown to reset times
-- Color-coded status: green (<50%) / amber (50-80%) / red (>80%)
+- Countdown to next reset
+- Color-coded: green (<50%) / amber (50-80%) / red (>80%)
 
-Auto-refreshes every 60 seconds.
+Auto-refreshes every 60 seconds. Only active gauges are shown — inactive windows are hidden automatically.
 
-## Prerequisites
+## Quick install
 
-- macOS
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed and authenticated (`claude --login`)
-- [Übersicht](https://tracesof.net/uebersicht/) (free macOS widget engine)
-
-## Install
-
-### 1. Install Übersicht
+**Prerequisites:** macOS, [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed and logged in.
 
 ```bash
+# 1. Install Übersicht (free desktop widget engine)
 brew install --cask ubersicht
-```
 
-Or download from [tracesof.net/uebersicht](https://tracesof.net/uebersicht/).
+# 2. Download the widget
+curl -fsSL https://raw.githubusercontent.com/cloudwarriors-ai/claude-usage-widget/main/claude-usage.jsx \
+  -o "$HOME/Library/Application Support/Übersicht/widgets/claude-usage.jsx"
 
-### 2. Install the widget
-
-```bash
-cp claude-usage.jsx "$HOME/Library/Application Support/Übersicht/widgets/"
-```
-
-Or manually copy `claude-usage.jsx` into your Übersicht widgets folder:
-`~/Library/Application Support/Übersicht/widgets/`
-
-### 3. Launch Übersicht
-
-Open Übersicht from Applications. The widget appears in the bottom-right corner of your desktop.
-
-## One-liner install
-
-```bash
-brew install --cask ubersicht && \
-curl -fsSL https://raw.githubusercontent.com/ttar-p/claude-usage-widget/main/claude-usage.jsx \
-  -o "$HOME/Library/Application Support/Übersicht/widgets/claude-usage.jsx" && \
+# 3. Launch
 open -a "Übersicht"
 ```
 
+That's it. If you're logged into Claude Code, the widget picks up your token automatically.
+
+## Manual install
+
+1. Install [Übersicht](https://tracesof.net/uebersicht/) (or `brew install --cask ubersicht`)
+2. Copy `claude-usage.jsx` into `~/Library/Application Support/Übersicht/widgets/`
+3. Open Übersicht — widget appears in the bottom-right corner
+
 ## How it works
 
-The widget reads your Claude Code OAuth token from the macOS Keychain and calls the same usage API that claude.ai's settings page uses. No API keys to configure — if you're logged into Claude Code, it just works.
+```
+macOS Keychain → Claude Code OAuth token → Anthropic usage API → Desktop gauges
+```
 
-```
-macOS Keychain → OAuth token → api.anthropic.com/api/oauth/usage → Desktop widget
-```
+No API keys to configure. The widget reads the same OAuth token that Claude Code stores in your macOS Keychain and calls the usage endpoint that claude.ai uses internally.
 
 ## Customization
 
-Edit the widget file to change:
+Edit `claude-usage.jsx` (or the copy in your widgets folder) to change:
 
-- **Position**: Modify `bottom` / `right` in `className` (e.g., `top: 20px; left: 20px;`)
-- **Refresh rate**: Change `refreshFrequency` (milliseconds)
-- **Colors**: Edit `getColor()` thresholds
+| Setting | Where | Default |
+|---------|-------|---------|
+| Position | `className` → `bottom` / `right` | Bottom-right (20px) |
+| Refresh rate | `refreshFrequency` | 60000ms (1 min) |
+| Color thresholds | `getColor()` | Green <50%, Amber <80%, Red >=80% |
 
 ## Troubleshooting
 
-**Widget not showing?**
-- Grant Übersicht permissions: System Settings → Privacy & Security → Accessibility
-- Right-click Übersicht menu bar icon → Refresh All Widgets
-
-**"Run claude --login to authenticate"?**
-- Open a terminal and run `claude --login` to authenticate Claude Code
-
-**Token expired?**
-- Open Claude Code (`claude` in terminal) — it auto-refreshes the OAuth token
+| Problem | Fix |
+|---------|-----|
+| Widget not showing | System Settings → Privacy & Security → Accessibility → enable Übersicht |
+| "Run claude --login" | Open terminal, run `claude --login` |
+| Token expired | Open Claude Code in terminal — it auto-refreshes the token |
+| Stale data | Right-click Übersicht menu bar icon → Refresh All Widgets |
 
 ## License
 
